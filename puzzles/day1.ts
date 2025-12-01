@@ -29,3 +29,35 @@ export function part1(): number {
     return countZero;
     
 }
+
+function countClicks(start: number, turns: number): number {
+    let countZero = 0;
+    let position = start;
+
+    const direction = turns >= 0 ? 1 : -1;
+    const turnsAbs = Math.abs(turns);
+
+    for (let i = 0; i < turnsAbs; i++) {
+        position = (position + direction + 100) % 100;
+        if (position === 0) {
+            countZero++;
+        }
+    }
+    return countZero;
+}
+
+export function part2(): number {
+    let countZero = 0;
+    let position = 50;
+    
+    for (const move of input) {
+        countZero += countClicks(position, move);
+        position = (position + move + 100) % 100;
+    }
+    
+    return countZero;
+        
+}
+
+// part 1: 1154 - correct
+// part 2: 6819 - correct
