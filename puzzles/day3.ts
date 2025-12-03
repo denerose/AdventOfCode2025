@@ -45,7 +45,61 @@ export function part1(): number {
     return joltage;
 }
 
+function findHighestTwelveDigitCombo(digits: string[]): number {
+    
+    if (digits.length < 12) {
+        throw new Error('Not a battery bank');
+    }
+
+    let highestFound = parseInt(digits.slice(0, 12).join(''))
+
+    for (let i = 0; i <= digits.length - 12; i++) {
+        const highestFromHereArray = [digits[i]];
+
+        for (let j = i + 1; j < digits.length; j++) {
+            let nextBest = digits[j];
+            const visited = [];
+            for (let k = j + 1; k < digits.length; k++) {
+                if (digits[k]! > nextBest!) {
+                    nextBest = digits[k];
+                }
+                visited.push(k);
+            }
+            
+                if (nextBest!.length === 12) highestFromHereArray.push(nextBest!);
+                else {
+                    let nextNextBest = digits[j + 1];
+                    while (visited.length > 0) {
+                        const v = visited.shift()!;
+                        if (digits[v]! > nextNextBest!) {
+                            nextNextBest = digits[v];
+                            j = v + 1;
+                        }
+                    }
+                highestFromHereArray.push(nextNextBest!);
+                }
+            }
+
+            const combo = parseInt(highestFromHereArray.join(''), 10);
+            if (combo > highestFound) {
+                highestFound = combo;
+         }
+    }
+
+    return highestFound;
+}
+
 export function part2(): number {
 
-    return 0;
+    const banks = sample;
+
+    let joltage = 0;
+
+    for (const bank of banks) {
+        const next = findHighestTwelveDigitCombo(bank);
+        joltage += next;
+        console.log(next);
+    }
+
+    return joltage;
 }
