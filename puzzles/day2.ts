@@ -58,31 +58,60 @@ function isInvalidV2(num: number): boolean {
         return true;
     }
 
-    const charArray = num.toString().split('');
+    const numStr = num.toString();
+
+    if (numStr.length <= 1) {
+        return false;
+    }
+
+    const charArray = numStr.split('');
 
     for (let seqLength = 1; seqLength <= Math.floor(charArray.length / 2); seqLength++) {
         const seen: Map<string, number> = new Map();
+
         for (let i = 0; i <= charArray.length - seqLength; i++) {
             const seq = charArray.slice(i, i + seqLength).join('');
             seen.set(seq, (seen.get(seq) || 0) + 1);
         }
+
+        const counts = Array.from(seen.values());
+        let hasDuplicate = false;
+
+        for (const count of counts) {
+            if (count > 1) {
+                hasDuplicate = true;
+                continue;
+            }
+        }
+
+        if (!hasDuplicate) {
+            return false;
+        }
+
         for (const count of seen.values()) {
             if (count === 1) {
                 return false;
             }
         }
     }
-    
-    console.log(`Number ${num} is invalid in V2 check.`);
+
+    if ((numStr.length === 5) && (numStr[0] !== numStr[1])) {
+        return false;
+    }
+
     return true;
 }
 
 export function part2(): number {
     let sumInvalidIds = 0;
 
-    for (const range of sample) {
+    for (const range of input) {
         sumInvalidIds += sumRange(range, isInvalidV2);
     }
 
     return sumInvalidIds;
 }
+
+
+// Part 1 = 30599400849
+// Part 2 = 46270373595
