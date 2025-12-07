@@ -53,53 +53,59 @@ function findHighestTwelveDigitCombo(digits: string[]): number {
 
     let highestFound = parseInt(digits.slice(0, 12).join(''))
 
-    for (let i = 0; i <= digits.length - 12; i++) {
-        const highestFromHereArray = [digits[i]];
+    const comboDigits: string[] = new Array(12).fill('0');
+    
+    let remainingSlots = 12
 
-        for (let j = i + 1; j < digits.length; j++) {
-            let nextBest = digits[j];
-            const visited = [];
-            for (let k = j + 1; k < digits.length; k++) {
-                if (digits[k]! > nextBest!) {
-                    nextBest = digits[k];
-                }
-                visited.push(k);
+    while (remainingSlots > 0) {
+        let startIndex = 0;
+        for (let i = startIndex; i <= digits.length - remainingSlots; i++) {
+            const digit = digits[i]!;
+            const bestFound = findHighestInArray(digits.slice(i, digits.length - remainingSlots + 1));
+            comboDigits[12 - remainingSlots] = bestFound.highest.toString();
+            startIndex = bestFound.index + i + 1;
+            i = startIndex - 1;
+            remainingSlots--;
+            if (remainingSlots === 0) {
+                break;
             }
-            
-                if (nextBest!.length === 12) highestFromHereArray.push(nextBest!);
-                else {
-                    let nextNextBest = digits[j + 1];
-                    while (visited.length > 0) {
-                        const v = visited.shift()!;
-                        if (digits[v]! > nextNextBest!) {
-                            nextNextBest = digits[v];
-                            j = v + 1;
-                        }
-                    }
-                highestFromHereArray.push(nextNextBest!);
-                }
-            }
-
-            const combo = parseInt(highestFromHereArray.join(''), 10);
-            if (combo > highestFound) {
-                highestFound = combo;
-         }
+        }
     }
+
+    highestFound = Math.max(highestFound, parseInt(comboDigits.join('')));
 
     return highestFound;
 }
 
+type Result = { highest: number; index: number; }
+
+function findHighestInArray(arr: string[]): Result {
+    let highest: number = parseInt(arr[0]!);
+    let index = 0;
+
+    for (let i = 1; i < arr.length; i++) {
+        if (parseInt(arr[i]!) > highest) {
+            highest = parseInt(arr[i]!);
+            index = i;
+        }
+    }
+
+    return { highest, index };
+}
+
 export function part2(): number {
 
-    const banks = sample;
+    const banks = input;
 
     let joltage = 0;
 
     for (const bank of banks) {
         const next = findHighestTwelveDigitCombo(bank);
         joltage += next;
-        console.log(next);
     }
 
     return joltage;
 }
+
+// Part 1: 17330
+// Part 2: 171518260283767
