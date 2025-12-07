@@ -28,11 +28,11 @@ export class Grid {
     return coord.x >= 0 && coord.x < this.width && coord.y >= 0 && coord.y < this.height;
   }
 
-  getValue(coord: Coord): string | null {
+  getValue(coord: Coord): string {
     if (this.isInside(coord)) {
       return this.grid[coord.y]![coord.x] ?? this.defaultValue;
     }
-    return null;
+    return 'w';
   }
 
   setValue(coord: Coord, value: string): void {
@@ -49,16 +49,37 @@ export class Grid {
     }
   }
 
+  changeSize(newWidth: number, newHeight: number): void {
+    const newGrid: string[][] = Array.from({ length: newHeight }, () => Array(newWidth).fill(this.defaultValue));
+    for (let y = 0; y < Math.min(this.height, newHeight); y++) {
+      for (let x = 0; x < Math.min(this.width, newWidth); x++) {
+        newGrid[y]![x] = this.grid[y]![x] ?? this.defaultValue;
+      }
+    }
+    this.width = newWidth;
+    this.height = newHeight;
+    this.grid = newGrid;
+  }
+
   setContentsFromTxt(txt: string): void {
     const lines = txt.split('\n');
     if (lines.length === 0) {
       return;
     }
-    this.height = Math.max(lines.length, this.height);
-    this.width = Math.max(lines[0]!.length, this.width);
+    this.changeSize(lines[0]!.length, lines.length);
     for (let y = 0; y < Math.min(lines.length, this.height); y++) {
       this.setRow(lines[y]!, y);
     }
+  }
+
+  getAllCoords(): Coord[] {
+    const coords: Coord[] = [];
+    for (let y = 0; y < this.height; y++) {
+      for (let x = 0; x < this.width; x++) {
+        coords.push(new Coord(x, y));
+      }
+    }
+    return coords;
   }
 
   getNeighborValues(coord: Coord): string[] {

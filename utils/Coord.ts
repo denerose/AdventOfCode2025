@@ -10,4 +10,12 @@ export class Coord {
   add(other: Coord): Coord {
     return new Coord(this.x + other.x, this.y + other.y);
   }
+
+  equals(other: Coord): boolean {
+    return this.x === other.x && this.y === other.y;
+  }
+
+  toString(): string {
+    return `(${this.x}, ${this.y})`;
+  }
 }
