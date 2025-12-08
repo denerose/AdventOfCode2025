@@ -36,6 +36,33 @@ export function part1(): number {
     return total;
 }
 
+const splitter: RegExp = /\s*\d{1,4}\s/g;
+
+function splitNumbers(str: string): number[] {
+    // example `123 ` => [1, 2, 3, 0], ` 45 ` => [0, 4, 5, 0]
+    const nums: number[] = [];
+    for (let i = 0; i < 4; i++) {
+        const char = str.charAt(i);
+        if (char === " ") {
+            nums.push(0);
+        } else {
+            nums.push(Number(char));
+        }
+    }
+    return nums;
+}
+
 export function part2(): number {
+    const line1 = sampleData[0]?.match(splitter)!.map(splitNumbers);
+    const line2 = sampleData[1]?.match(splitter)!.map(splitNumbers);
+    const line3 = sampleData[2]?.match(splitter)!.map(splitNumbers);
+    // const line4 = sampleData[3]?.match(splitter)!.map(s => s.trim());
+    const operators = sampleData[3]?.split(" ").map(s => s.trim()).filter(s => s.length > 0);
+
+    console.log(line1);
+    console.log(line2);
+    console.log(line3);
+    console.log(operators);
+
     return 0;
 }
