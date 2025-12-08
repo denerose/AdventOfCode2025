@@ -19,7 +19,15 @@ class Range {
     }
 
     countInRange(): number {
-        return this.end - this.start + 1;
+        return this.end - this.start;
+    }
+
+    getAllInRange(): number[] {
+        const nums: number[] = [];
+        for (let i = this.start; i <= this.end; i++) {
+            nums.push(i);
+        }
+        return nums;
     }
 }
 
@@ -48,8 +56,41 @@ export function part1(): number {
     return countFresh;
 }
 
-export function part2(): number {
-    let totalFreshIds = 0;
+function consolidateRanges(ranges: Range[]): Range[] {
+    if (ranges.length === 0) {
+        return [];
+    }
 
-    return totalFreshIds;
+    ranges.sort((a, b) => a.start - b.start);
+    const consolidated: Range[] = [];
+    let currentRange = ranges[0];
+
+    for (let i = 1; i < ranges.length; i++) {
+        const nextRange = ranges[i];
+        if (currentRange!.end >= nextRange!.start) {
+            currentRange!.end = Math.max(currentRange!.end, nextRange!.end);
+        } else {
+            consolidated.push(currentRange!);
+            currentRange = nextRange;
+        }
+    }
+    consolidated.push(currentRange!);
+    return consolidated;
 }
+
+export function part2(): number {
+
+    const consolidatedRanges = consolidateRanges(ranges);
+
+    let freshIdsCount = 0;
+
+    for (const range of consolidatedRanges) {
+        freshIdsCount += range.countInRange() + 1;
+    }
+
+   
+    return freshIdsCount;
+}
+
+// Day 5, Part 1: 865
+// Day 5, Part 2: 352556672963116
