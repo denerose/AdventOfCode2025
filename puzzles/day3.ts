@@ -87,6 +87,7 @@ function findHighestInArray(arr: string[]): Result {
         if (parseInt(arr[i]!) > highest) {
             highest = parseInt(arr[i]!);
             index = i;
+            if (highest === 9) break;
         }
     }
 
