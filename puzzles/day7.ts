@@ -43,8 +43,15 @@ export function part1(): number {
     return totalSplits;
 }
 
+const totalTimelines = new Map<Coord, number>();
+
+function addTimeline(coord: Coord) {
+    const key = coord;
+    const currentCount = totalTimelines.get(key) ?? 0;
+    totalTimelines.set(key, currentCount + 1);
+}
+
 export function part2(): number {
-    let totalTimelines = 0;
 
     const data = sampleGrid;
 
@@ -63,10 +70,11 @@ export function part2(): number {
                 if (belowCell === '^') {
                     if (x > 0) {
                         nextRowStatus[x - 1] = '#';
+                        addTimeline(new Coord(x - 1, y + 1));
                         }
                     if (x < data.width - 1) {
                         nextRowStatus[x + 1] = '#';
-                        totalTimelines++;
+                        addTimeline(new Coord(x + 1, y + 1));
                     }
                 } 
                 else { 
@@ -76,7 +84,8 @@ export function part2(): number {
         }
         currentRowStatus = nextRowStatus;
         nextRowStatus = data.getRow(y + 2);
+
     }
 
-    return totalTimelines;
+    return Array.from(totalTimelines.values()).reduce((a, b) => a + b, 0);
 }
