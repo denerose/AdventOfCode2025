@@ -17,11 +17,11 @@ export class Grid {
   grid: string[][];
   defaultValue: string;
 
-  constructor(width: number, height: number, defaultValue?: string) {
-    this.width = width;
-    this.height = height;
+  constructor(width?: number, height?: number, defaultValue?: string) {
+    this.width = (width ?? 0);
+    this.height = (height ?? 0);
     this.defaultValue = defaultValue ?? '.';
-    this.grid = Array.from({ length: height }, () => Array(width).fill(this.defaultValue));
+    this.grid = Array.from({ length: this.height }, () => Array(this.width).fill(this.defaultValue));
   }
 
   isInside(coord: Coord): boolean {
@@ -39,6 +39,13 @@ export class Grid {
     if (this.isInside(coord)) {
       this.grid[coord.y]![coord.x] = value;
     }
+  }
+
+  getRow(rowIndex: number): string[] {
+    if (rowIndex >= 0 && rowIndex < this.height) {
+      return this.grid[rowIndex]!;
+    }
+    return [];
   }
 
   setRow(stringRow: string, rowIndex: number): void {
@@ -61,15 +68,16 @@ export class Grid {
     this.grid = newGrid;
   }
 
-  setContentsFromTxt(txt: string): void {
+  setContentsFromTxt(txt: string): Grid {
     const lines = txt.split('\n');
     if (lines.length === 0) {
-      return;
+      return this;
     }
     this.changeSize(lines[0]!.length, lines.length);
     for (let y = 0; y < Math.min(lines.length, this.height); y++) {
       this.setRow(lines[y]!, y);
     }
+    return this;
   }
 
   getAllCoords(): Coord[] {
