@@ -7,11 +7,29 @@ const data = input.split("\n");
 const sampleData = sample.split("\n");
 
 function add(a: number, b: number, c: number, d?: number): number {
-    return a + b + c + (d ?? 0);
+    let acc = 0;
+    
+    for (const num of [a, b, c, d]) {
+        if (!num || isNaN(num!)) {
+            continue;
+        }
+        acc += num!;
+    }
+    
+    return acc;
 }
 
 function multiply(a: number, b: number, c: number, d?: number): number {
-    return a * b * c * (d ?? 1);
+    let acc = 1;
+    
+    for (const num of [a, b, c, d]) {
+        if (!num || isNaN(num!)) {
+            continue;
+        }
+        acc *= num!;
+    }
+    
+    return acc;
 }
 
 export function part1(): number {
@@ -56,18 +74,12 @@ function processChunks(op: string, line1: string, line2: string, line3: string, 
     const trimmedNum3 = (line1[2]! + line2[2]! + line3[2]! + line4[2]!).replace(/\s/g, '');
     const trimmedNum4 = (line1[3]! + line2[3]! + line3[3]! + line4[3]!).replace(/\s/g, '');
 
-    let num1 = parseInt(trimmedNum1) ?? 0;
-    let num2 = parseInt(trimmedNum2) ?? 0;
-    let num3 = parseInt(trimmedNum3) ?? 0;
-    let num4 = parseInt(trimmedNum4) ?? 0;
+    const num1 = parseInt(trimmedNum1);
+    const num2 = parseInt(trimmedNum2);
+    const num3 = parseInt(trimmedNum3);
+    const num4 = parseInt(trimmedNum4);
 
-    if (isNaN(num1)) num1 = 0;
-    if (isNaN(num2)) num2 = 0;
-    if (isNaN(num3)) num3 = 0;
-    if (isNaN(num4)) num4 = 0;
-
-    console.log(`Parsed Numbers: ${num1}, ${num2}, ${num3}, ${num4}`);
-    const result = (op === "*") ? multiply(num1, num2, num3, num4) : add(num1, num2, num3, num4);
+    const result = (op === "+") ? add(num4, num3, num2, num1) : multiply(num4, num3, num2, num1);
 
 
     return result;
@@ -91,4 +103,4 @@ export function part2(): number {
 }
 
 
-// Part 2 - 1699873206852437 (too high)
+// Part 2 - 1699873206852437, 1712991349171673 (too high)
